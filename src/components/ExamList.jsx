@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-function ExamList() {
-  // Component state to hold the exams data
-  const [exams, setExams] = useState([]);
-
-  // Fetch the exams data from the API
-  useEffect(() => {
-    // Make an API request to fetch the exams data using Axios or a similar library
-    // Update the exams state with the fetched data using setExams
-  }, []);
-
-  // Render the list of exams
+const ExamList = ({ exams }) => {
   return (
     <div>
-      {/* Map over the exams array and render each exam */}
       {exams.map((exam) => (
         <div key={exam.id}>
-          {/* Display the exam details */}
-          <p>{exam.CandidateName}</p>
-          {/* Add more JSX to display other exam details */}
+          <h2>{exam.CandidateName}</h2>
+          <p>Date: {exam.Date}</p>
+          <p>Location: {exam.LocationName}</p>
+          {/* Render other exam details if needed */}
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default ExamList;
