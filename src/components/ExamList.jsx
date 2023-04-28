@@ -1,6 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const ExamList = ({ exams }) => {
+const ExamList = () => {
+  const [exams, setExams] = useState([]);
+
+  useEffect(() => {
+    // Fetch the exams data from the API
+    axios
+      .get("http://localhost:3000/api/exams") // Update the API endpoint URL if needed
+      .then((response) => {
+        setExams(response.data);
+      })
+      .catch((error) => {
+        console.log("Error fetching exams:", error);
+      });
+  }, []);
+
+  if (!exams || exams.length === 0) {
+    return <p>No exams available.</p>;
+  }
+
   return (
     <div>
       {exams.map((exam) => (
