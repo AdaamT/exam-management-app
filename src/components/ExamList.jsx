@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { fetchExams } from "../utils/api";
+import axios from "axios";
 
 const ExamList = () => {
   const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    const fetchExamsData = async () => {
+    const fetchExams = async () => {
       try {
-        const response = await fetchExams();
+        const response = await axios.get("http://localhost:3000/api/exams");
         const sortedExams = response.data.sort(
           (a, b) => new Date(a.Date) - new Date(b.Date)
         );
@@ -17,7 +17,7 @@ const ExamList = () => {
       }
     };
 
-    fetchExamsData();
+    fetchExams();
   }, []);
 
   if (!exams || exams.length === 0) {
