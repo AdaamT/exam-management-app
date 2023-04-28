@@ -3,6 +3,7 @@ import axios from "axios";
 
 const ExamList = () => {
   const [exams, setExams] = useState([]);
+  const [candidateFilter, setCandidateFilter] = useState("");
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -20,13 +21,37 @@ const ExamList = () => {
     fetchExams();
   }, []);
 
-  if (!exams || exams.length === 0) {
-    return <p>No exams available.</p>;
+  const handleFilterChange = (event) => {
+    setCandidateFilter(event.target.value);
+  };
+
+  const filteredExams = exams.filter((exam) =>
+    exam.CandidateName.toLowerCase().includes(candidateFilter.toLowerCase())
+  );
+
+  if (!filteredExams || filteredExams.length === 0) {
+    return (
+      <div>
+        <p>No exams available.</p>
+        <input
+          type="text"
+          // placeholder="Search by candidate"
+          value={candidateFilter}
+          onChange={handleFilterChange}
+        />
+      </div>
+    );
   }
 
   return (
     <div>
-      {exams.map((exam) => (
+      <input
+        type="text"
+        placeholder="Search by Candidate"
+        value={candidateFilter}
+        onChange={handleFilterChange}
+      />
+      {filteredExams.map((exam) => (
         <div key={exam.id}>
           <h2>{exam.CandidateName}</h2>
           <p>Date: {exam.Date}</p>
