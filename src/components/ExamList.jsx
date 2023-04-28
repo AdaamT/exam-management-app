@@ -9,7 +9,10 @@ const ExamList = () => {
     axios
       .get("http://localhost:3000/api/exams") // Update the API endpoint URL if needed
       .then((response) => {
-        setExams(response.data);
+        const sortedExams = response.data.sort(
+          (a, b) => new Date(a.Date) - new Date(b.Date)
+        );
+        setExams(sortedExams);
       })
       .catch((error) => {
         console.log("Error fetching exams:", error);
