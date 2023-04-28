@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchExams } from "../utils/api";
 
 const ExamList = () => {
   const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    // Fetch the exams data from the API
-    axios
-      .get("http://localhost:3000/api/exams") // Update the API endpoint URL if needed
-      .then((response) => {
+    const fetchExamsData = async () => {
+      try {
+        const response = await fetchExams();
         const sortedExams = response.data.sort(
           (a, b) => new Date(a.Date) - new Date(b.Date)
         );
         setExams(sortedExams);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log("Error fetching exams:", error);
-      });
+      }
+    };
+
+    fetchExamsData();
   }, []);
 
   if (!exams || exams.length === 0) {
