@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const ExamList = () => {
   const [exams, setExams] = useState([]);
   const [candidateFilter, setCandidateFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+  const [filteredExams, setFilteredExams] = useState([]);
 
   useEffect(() => {
-    const fetchExams = async () => {
+    const fetchExamsData = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/exams");
         const sortedExams = response.data.sort(
@@ -18,47 +20,74 @@ const ExamList = () => {
       }
     };
 
-    fetchExams();
+    fetchExamsData();
   }, []);
 
-  const handleFilterChange = (event) => {
+  const handleCandidateFilterChange = (event) => {
     setCandidateFilter(event.target.value);
   };
 
-  const filteredExams = exams.filter((exam) =>
-    exam.CandidateName.toLowerCase().includes(candidateFilter.toLowerCase())
-  );
+  const handleLocationFilterChange = (event) => {
+    setLocationFilter(event.target.value);
+  };
 
-  if (!filteredExams || filteredExams.length === 0) {
-    return (
-      <div>
-        <p>No exams available.</p>
-        <input
-          type="text"
-          // placeholder="Search by candidate"
-          value={candidateFilter}
-          onChange={handleFilterChange}
-        />
-      </div>
-    );
-  }
+  const handleFilterClick = () => {
+    const filteredExams = exams.filter((exam) => {
+      const matchesCandidate =
+        exam.CandidateName.toLowerCase().includes(
+          candidateFilter.toLowerCase()
+        ) || candidateFilter === "";
+      const matchesLocation =
+        exam.LocationName.toLowerCase().includes(
+          locationFilter.toLowerCase()
+        ) || locationFilter === "";
+      return matchesCandidate && matchesLocation;
+    });
+    setFilteredExams(filteredExams);
+  };
+
+  const handleClearFilters = () => {
+    setCandidateFilter("");
+    setLocationFilter("");
+    setFilteredExams([]);
+  };
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Search by Candidate"
-        value={candidateFilter}
-        onChange={handleFilterChange}
-      />
-      {filteredExams.map((exam) => (
-        <div key={exam.id}>
-          <h2>{exam.CandidateName}</h2>
-          <p>Date: {exam.Date}</p>
-          <p>Location: {exam.LocationName}</p>
-          {/* Render other exam details if needed */}
-        </div>
-      ))}
+      <div>
+        <label>Candidate Name:</label>
+        <input
+          type="text"
+          placeholder="Enter candidate name"
+          value={candidateFilter}
+          onChange={handleCandidateFilterChange}
+        />
+      </div>
+
+      <div>
+        <label>Location:</label>
+        <input
+          type="text"
+          placeholder="Enter location"
+          value={locationFilter}
+          onChange={handleLocationFilterChange}
+        />
+      </div>
+
+      <button onClick={handleFilterClick}>Filter</button>
+      <button onClick={handleClearFilters}>Clear Filters</button>
+
+      {filteredExams.length > 0 ? (
+        filteredExams.map((exam) => (
+          <div key={exam.id}>
+            <h2>{exam.CandidateName}</h2>
+            <p>Date: {exam.Date}</p>
+            <p>Location: {exam.LocationName}</p>
+          </div>
+        ))
+      ) : (
+        <p>No exams available.</p>
+      )}
     </div>
   );
 };
