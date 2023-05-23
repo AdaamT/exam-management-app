@@ -16,6 +16,7 @@ const ExamList = () => {
           (a, b) => new Date(a.Date) - new Date(b.Date)
         );
         setExams(sortedExams);
+        setFilteredExams(sortedExams);
       } catch (error) {
         console.log("Error fetching exams:", error);
       }
